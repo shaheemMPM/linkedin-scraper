@@ -1,0 +1,13 @@
+.btn-select-user {
+  margin-bottom: 25px;
+  background: #318631;
+  padding: 5px 10px;
+  margin-left: 20px;
+  color: white;
+  border-radius: 5px;
+  border: none;
+}
+
+.btn-select-user:hover {
+  box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.48);
+}

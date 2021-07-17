@@ -1,0 +1,15 @@
+body {
+  background-color: antiquewhite;
+}
+
+.root {
+  width: 500px;
+  height: 600px;
+  padding: 10px;
+}
+
+.app-header {
+  font-size: medium;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+}

@@ -9,7 +9,12 @@ body {
 }
 
 .app-header {
-  font-size: medium;
   text-align: center;
-  font-family: "Courier New", Courier, monospace;
+}
+
+.data-table {
+  margin-top: 20px;
+  margin-left: 25px;
+  margin-right: 25px;
+  width: 100%;
 }

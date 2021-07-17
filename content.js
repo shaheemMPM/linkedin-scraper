@@ -12,16 +12,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 const delay = (second) => new Promise((res) => setTimeout(res, second * 1000));
 
 const addSelectUserButtons = () => {
-  let usersUL = document.getElementsByClassName(
+  const usersUL = document.getElementsByClassName(
     "search-results__result-list"
   )[0];
 
-  let usersLiItems = usersUL.children;
+  const usersLiItems = usersUL.children;
 
   for (let i = 0; i < usersLiItems.length; i++) {
-    let userLI = usersLiItems[i];
-    let userLiInnerHTML = userLI.innerHTML;
-    let selectUserBtn = '<button class="btn-select-user">Select user</button>';
+    const userLI = usersLiItems[i];
+    const userLiInnerHTML = userLI.innerHTML;
+    const selectUserBtn =
+      '<button class="btn-select-user">Select user</button>';
     userLI.innerHTML = selectUserBtn + userLiInnerHTML;
   }
 
@@ -29,8 +30,34 @@ const addSelectUserButtons = () => {
   const selectUserButtons = document.getElementsByClassName("btn-select-user");
   for (let i = 0; i < selectUserButtons.length; i++) {
     const btnSelectUser = selectUserButtons[i];
-    btnSelectUser.onclick = (event) => {
-      console.log("test", event.target);
-    };
+    btnSelectUser.onclick = selectUserHandler;
   }
 };
+
+const candidates = [];
+
+const selectUserHandler = (event) => {
+  const selectedUserLI = event.target.parentElement;
+
+  let userPagePath = selectedUserLI.getAttribute("data-scroll-into-view");
+  userPagePath = userPagePath.split("Profile:(")[1];
+  userPagePath = userPagePath.substring(0, userPagePath.length - 1);
+  userPagePath = `https://www.linkedin.com/sales/people/${userPagePath}`;
+
+  try {
+    let userName = selectedUserLI.lastElementChild.getElementsByClassName(
+      "result-lockup__name"
+    )[0].innerText;
+
+    let tempData = {
+      userPagePath,
+      userName,
+    };
+    candidates.push(tempData);
+    console.log(candidates);
+  } catch (error) {
+    swal("Invalid", "Cannot get user data", "error");
+  }
+};
+
+// document.getElementsByClassName('btn-select-user')[0].parentElement.lastElementChild.getElementsByClassName(

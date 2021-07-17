@@ -37,6 +37,10 @@ const addSelectUserButtons = () => {
 const candidates = [];
 
 const selectUserHandler = (event) => {
+  event.target.style.backgroundColor = "#144b7d";
+  event.target.innerText = "SELECTED";
+  event.target.disabled = true;
+
   const selectedUserLI = event.target.parentElement;
 
   let userPagePath = selectedUserLI.getAttribute("data-scroll-into-view");
@@ -54,10 +58,31 @@ const selectUserHandler = (event) => {
       userName,
     };
     candidates.push(tempData);
+    if (candidates.length === 1) {
+      createCounter();
+    } else {
+      incrementCounter();
+    }
     console.log(candidates);
   } catch (error) {
+    console.log(error);
     swal("Invalid", "Cannot get user data", "error");
   }
+};
+
+const createCounter = () => {
+  const counterDiv = document.createElement("div");
+  counterDiv.style =
+    "z-index: 10000;position: fixed;top: 30px;left: 30px;background: antiquewhite;padding: 20px;border-radius: 15px;box-shadow: 10px 10px 9px -2px rgb(187 181 181 / 74%);";
+  counterDiv.innerHTML =
+    '<h6 style="text-align:center;">Selected Users</h6><h1 id="tfCounter" style="text-align:center;">1</h1></div>';
+  document.body.appendChild(counterDiv);
+};
+
+const incrementCounter = () => {
+  const counterField = document.getElementById("tfCounter");
+  let count = Number(counterField.innerText) + 1;
+  counterField.innerText = String(count);
 };
 
 // document.getElementsByClassName('btn-select-user')[0].parentElement.lastElementChild.getElementsByClassName(

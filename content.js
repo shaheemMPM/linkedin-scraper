@@ -1,11 +1,20 @@
 // sending a message to background page to show page action
 chrome.runtime.sendMessage({ todo: "showPageAction" });
 
+const candidates = [];
+
 // response to addButtons request in popup page
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action == "addButtons") {
     addSelectUserButtons();
     sendResponse({ status: "success" });
+  }
+});
+
+// response to getUsers request in popup page
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action == "getUsers") {
+    sendResponse({ candidates });
   }
 });
 
@@ -34,8 +43,6 @@ const addSelectUserButtons = () => {
   }
 };
 
-const candidates = [];
-
 const selectUserHandler = (event) => {
   event.target.style.backgroundColor = "#144b7d";
   event.target.innerText = "SELECTED";
@@ -43,18 +50,22 @@ const selectUserHandler = (event) => {
 
   const selectedUserLI = event.target.parentElement;
 
-  let userPagePath = selectedUserLI.getAttribute("data-scroll-into-view");
-  userPagePath = userPagePath.split("Profile:(")[1];
-  userPagePath = userPagePath.substring(0, userPagePath.length - 1);
-  userPagePath = `https://www.linkedin.com/sales/people/${userPagePath}`;
+  let userHref = selectedUserLI.getElementsByClassName(
+    "result-lockup__name"
+  )[0];
+  userHref = userHref.getElementsByTagName("a")[0];
+  userHref = userHref.href;
+
+  const userId = userHref.split("/sales/people/")[1].split(",")[0];
 
   try {
-    let userName = selectedUserLI.lastElementChild.getElementsByClassName(
+    let userName = selectedUserLI.getElementsByClassName(
       "result-lockup__name"
     )[0].innerText;
 
     let tempData = {
-      userPagePath,
+      userId,
+      userHref,
       userName,
     };
     candidates.push(tempData);

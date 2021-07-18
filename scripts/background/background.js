@@ -1,4 +1,4 @@
-// shop popup on getting message from content script
+// show popup on getting message from content script
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   let background = chrome.extension.getBackgroundPage();
   background.console.log("request", request);

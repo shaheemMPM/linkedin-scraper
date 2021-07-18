@@ -23,12 +23,14 @@
       <button class="btn btn-sm btn-primary" id="btnClearTable">
         Clear Table
       </button>
-
-      <table
-        id="tbUsers"
-        class="table table-success table-striped table-hover data-table"
-        style="display: block"
-      ></table>
+      <button class="btn btn-sm btn-primary" id="btnGetUserData">
+        Get Current User Data
+      </button>
+      <div id="table-wrapper">
+        <div id="table-scroll">
+          <table id="tbUsers" border="1"></table>
+        </div>
+      </div>
     </div>
     <script src="../scripts/jquery-3.6.0.min.js"></script>
     <script src="./popup.js"></script>

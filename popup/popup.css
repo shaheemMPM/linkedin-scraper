@@ -6,15 +6,34 @@ body {
   width: 500px;
   height: 600px;
   padding: 10px;
+  overflow-x: scroll;
 }
 
 .app-header {
   text-align: center;
 }
 
-.data-table {
+#table-wrapper {
+  position: relative;
+}
+
+#table-scroll {
+  /* height: 150px; */
+  overflow: auto;
   margin-top: 20px;
-  margin-left: 25px;
-  margin-right: 25px;
+}
+
+#table-wrapper table {
   width: 100%;
+}
+
+td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  width: 500px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }

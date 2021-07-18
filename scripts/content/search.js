@@ -65,6 +65,7 @@ const selectUserHandler = (event) => {
       userId,
       userHref,
       userName,
+      level: 0,
     };
     candidates.push(tempData);
     if (candidates.length === 1) {

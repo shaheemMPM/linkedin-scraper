@@ -42,8 +42,6 @@
   "permissions": [
     "storage",
     "tabs",
-    "https://www.linkedin.com/*",
-    "clipboard",
-    "clipboardRead"
+    "https://www.linkedin.com/*"
   ]
 }

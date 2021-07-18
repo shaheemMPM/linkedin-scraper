@@ -1,8 +1,6 @@
 // sending a message to background page to show page action
 chrome.runtime.sendMessage({ todo: "showPageAction" });
 
-console.log("page id");
-
 const getUserData = () => {
   const userPathName = window.location.pathname;
   const userId = userPathName.split("/sales/people/")[1].split(",")[0];

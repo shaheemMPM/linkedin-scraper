@@ -18,8 +18,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 });
 
-const delay = (second) => new Promise((res) => setTimeout(res, second * 1000));
-
 const addSelectUserButtons = () => {
   const usersUL = document.getElementsByClassName(
     "search-results__result-list"
@@ -74,7 +72,6 @@ const selectUserHandler = (event) => {
     } else {
       incrementCounter();
     }
-    console.log(candidates);
   } catch (error) {
     console.log(error);
     swal("Invalid", "Cannot get user data", "error");

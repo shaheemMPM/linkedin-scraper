@@ -1,6 +1,6 @@
 {
   "name": "SalesNav Scrapper",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Scrap data from linked in sales navigator",
   "manifest_version": 2,
   "icons": {

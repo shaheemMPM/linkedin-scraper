@@ -2,6 +2,18 @@ const saveUsers = (users) => {
   chrome.storage.sync.set({ users: users });
 };
 
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  const currentSite = tabs[0].url;
+  if (currentSite.includes("https://www.linkedin.com/sales/search")) {
+    document.getElementById("btnAddSelect").style.display = "block";
+    document.getElementById("btnGetUsers").style.display = "block";
+  } else if (currentSite.includes("https://www.linkedin.com/sales/people")) {
+    document.getElementById("btnGetUserData").style.display = "block";
+  } else if (currentSite.includes("https://www.linkedin.com/sales/company")) {
+    document.getElementById("btnGetCompanyData").style.display = "block";
+  }
+});
+
 const populateTable = (users) => {
   const usersTable = document.getElementById("tbUsers");
   usersTable.innerHTML = `
@@ -9,7 +21,10 @@ const populateTable = (users) => {
       <th>Name</th>
       <th>Current Position</th>
       <th>Company Name</th>
+      <th>Company Address</th>
+      <th>No. Employees</th>
       <th>User Profile</th>
+      <th>Company Profile</th>
       <th>Actions</th>
     </tr>
   `;
@@ -23,8 +38,11 @@ const populateTable = (users) => {
       tempTR.innerHTML = `
         <td>${user.userName}</td>
         <td></td>
+        <td>${user.companyName || ""}</td>
+        <td>${user.companyAddress || ""}</td>
+        <td>${user.noEmployees || ""}</td>
         <td></td>
-        <td></td>
+        <td>${user.companyProfile || ""}</td>
         <td>
           <a href="${user.userHref}" target="_blank">OPEN USER</a>
         </td>`;
@@ -32,23 +50,60 @@ const populateTable = (users) => {
       tempTR.innerHTML = `
         <td>${user.userName}</td>
         <td>${user.currentPosition}</td>
-        <td class="cname-${user.companyId}">${user.companyName}</td>
+        <td>${user.companyName || ""}</td>
+        <td>${user.companyAddress || ""}</td>
+        <td>${user.noEmployees || ""}</td>
         <td>${user.profileUrl}</td>
+        <td>${user.companyProfile || ""}</td>
         <td>
-          <a href="https://www.linkedin.com/sales/company/${user.companyId}" target="_blank">OPEN COMPANY</a>
+          <a href="https://www.linkedin.com/sales/company/${
+            user.companyId
+          }" target="_blank">OPEN COMPANY</a>
         </td>`;
     } else if (user.level === 1) {
       tempTR.innerHTML = `
         <td>${user.userName}</td>
         <td>${user.currentPosition}</td>
-        <td id="cid-${user.companyId}">${user.companyName}</td>
+        <td>${user.companyName || ""}</td>
+        <td>${user.companyAddress || ""}</td>
+        <td>${user.noEmployees || ""}</td>
         <td>
           <input type="text" placeholder="profile url"/>
-          <button id="btnpro-${user.userId}" class="btn-add-profile">ADD</button>
+          <button id="btnpro-${
+            user.userId
+          }" class="btn-add-profile">ADD</button>
         </td>
+        <td>${user.companyProfile || ""}</td>
         <td>
-          <a href="https://www.linkedin.com/sales/company/${user.companyId}" target="_blank">OPEN COMPANY</a>
+          <a href="https://www.linkedin.com/sales/company/${
+            user.companyId
+          }" target="_blank">OPEN COMPANY</a>
         </td>`;
+    } else if (user.level === 2 && !!user.companyProfile) {
+      tempTR.innerHTML = `
+        <td>${user.userName}</td>
+        <td>${user.currentPosition}</td>
+        <td>${user.companyName}</td>
+        <td>${user.companyAddress}</td>
+        <td>${user.noEmployees}</td>
+        <td>${user.profileUrl || ""}</td>
+        <td>${user.companyProfile}</td>
+        <td></td>`;
+    } else if (user.level === 2) {
+      tempTR.innerHTML = `
+        <td>${user.userName}</td>
+        <td>${user.currentPosition}</td>
+        <td>${user.companyName}</td>
+        <td>${user.companyAddress}</td>
+        <td>${user.noEmployees}</td>
+        <td>${user.profileUrl || ""}</td>
+        <td>
+          <input type="text" placeholder="company url"/>
+          <button id="btncompany-${
+            user.companyId
+          }" class="btn-add-company">ADD</button>
+        </td>
+        <td></td>`;
     }
     usersTable.appendChild(tempTR);
   }
@@ -57,10 +112,15 @@ const populateTable = (users) => {
   for (let j = 0; j < btnAddProfile.length; j++) {
     btnAddProfile[j].addEventListener("click", addUserProfile, false);
   }
+
+  const btnAddCompany = document.getElementsByClassName("btn-add-company");
+  for (let j = 0; j < btnAddCompany.length; j++) {
+    btnAddCompany[j].addEventListener("click", addCompanyUrl, false);
+  }
 };
 
 const readUsers = () => {
-  chrome.storage.sync.get(["users"], function (data) {
+  chrome.storage.sync.get(["users"], (data) => {
     if (!!data.users) {
       populateTable(data.users);
     } else {
@@ -74,7 +134,7 @@ readUsers();
 const updateUsersData = (user) => {
   const { userId, companyId, currentPosition, companyName } = user;
 
-  chrome.storage.sync.get(["users"], function (data) {
+  chrome.storage.sync.get(["users"], (data) => {
     if (!!data.users) {
       let users = data.users;
 
@@ -100,18 +160,38 @@ const updateUsersData = (user) => {
   });
 };
 
+const updateCompanyData = (company) => {
+  const { companyId, companyAddress, noEmployees } = company;
+
+  chrome.storage.sync.get(["users"], (data) => {
+    if (!!data.users) {
+      let users = data.users;
+
+      for (let i = 0; i < users.length; i++) {
+        let user = users[i];
+        if (user.companyId === companyId) {
+          user.companyAddress = companyAddress;
+          user.noEmployees = noEmployees;
+          user.level = 2;
+          users[i] = user;
+        }
+      }
+
+      populateTable(users);
+      saveUsers(users);
+    }
+    return;
+  });
+};
+
 // select btnAddSelect button and add onclick listener
 const btnAddSelect = document.getElementById("btnAddSelect");
 
 btnAddSelect.onclick = () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      { action: "addButtons" },
-      function (data) {
-        console.log("select : ", data);
-      }
-    );
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "addButtons" }, (data) => {
+      console.log("select : ", data);
+    });
   });
 };
 
@@ -119,15 +199,11 @@ btnAddSelect.onclick = () => {
 const btnGetUsers = document.getElementById("btnGetUsers");
 
 btnGetUsers.onclick = () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      { action: "getUsers" },
-      function (data) {
-        saveUsers(data.candidates);
-        populateTable(data.candidates);
-      }
-    );
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "getUsers" }, (data) => {
+      saveUsers(data.candidates);
+      populateTable(data.candidates);
+    });
   });
 };
 
@@ -144,12 +220,23 @@ btnClearTable.onclick = () => {
 const btnGetUserData = document.getElementById("btnGetUserData");
 
 btnGetUserData.onclick = () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "getUserData" }, (data) => {
+      updateUsersData(data.userData);
+    });
+  });
+};
+
+// select btnGetCompanyData button and add onclick listener
+const btnGetCompanyData = document.getElementById("btnGetCompanyData");
+
+btnGetCompanyData.onclick = () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(
       tabs[0].id,
-      { action: "getUserData" },
-      function (data) {
-        updateUsersData(data.userData);
+      { action: "getCompanyData" },
+      (data) => {
+        updateCompanyData(data.companyData);
       }
     );
   });
@@ -162,7 +249,7 @@ const addUserProfile = (event) => {
 
   const currentUserId = currentButton.id.split("btnpro-")[1];
 
-  chrome.storage.sync.get(["users"], function (data) {
+  chrome.storage.sync.get(["users"], (data) => {
     if (!!data.users) {
       let users = data.users;
 
@@ -177,6 +264,32 @@ const addUserProfile = (event) => {
       };
 
       users[currentUserIndex] = currentUser;
+
+      populateTable(users);
+      saveUsers(users);
+    }
+    return;
+  });
+};
+
+const addCompanyUrl = (event) => {
+  const currentButton = event.target;
+
+  const inputValue = currentButton.parentElement.children[0].value;
+
+  const currentCompanyId = currentButton.id.split("btncompany-")[1];
+
+  chrome.storage.sync.get(["users"], (data) => {
+    if (!!data.users) {
+      let users = data.users;
+
+      for (let i = 0; i < users.length; i++) {
+        let user = users[i];
+        if (user.companyId === currentCompanyId) {
+          user.companyProfile = inputValue;
+          users[i] = user;
+        }
+      }
 
       populateTable(users);
       saveUsers(users);

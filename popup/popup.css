@@ -9,8 +9,14 @@ body {
   overflow-x: scroll;
 }
 
+button {
+  margin: 5px !important;
+}
+
 .app-header {
   text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 #table-wrapper {
@@ -27,8 +33,10 @@ body {
   width: 100%;
 }
 
-td {
-  border: 1px solid #dddddd;
+td,
+th {
+  border: 1px solid black;
+  border-width: 1px !important;
   text-align: left;
   padding: 8px;
   width: 500px;

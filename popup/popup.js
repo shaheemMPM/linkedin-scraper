@@ -14,17 +14,41 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   }
 });
 
+const getFirstName = (name) => {
+  let nameList = name.split(" ");
+  return nameList.shift();
+};
+
+const getLastName = (name) => {
+  let nameList = name.split(" ");
+  nameList.shift();
+  return nameList.join(" ");
+};
+
 const populateTable = (users) => {
   const usersTable = document.getElementById("tbUsers");
   usersTable.innerHTML = `
     <tr id="headLine">
-      <th>Name</th>
-      <th>Current Position</th>
-      <th>Company Name</th>
-      <th>Company Address</th>
-      <th>No. Employees</th>
-      <th>User Profile</th>
-      <th>Company Profile</th>
+      <th>First name</th>
+      <th>lastName</th>
+      <th>jobTitle</th>
+      <th>jobTitleLevel</th>
+      <th>jobTitleDepartment</th>
+      <th>companyName</th>
+      <th>emailAddress</th>
+      <th>streetAddress</th>
+      <th>street address 2</th>
+      <th>city</th>
+      <th>state</th>
+      <th>zipcode</th>
+      <th>country</th>
+      <th>phoneNumber</th>
+      <th>direct</th>
+      <th>industryType</th>
+      <th>employeeSize</th>
+      <th>revenueSize</th>
+      <th>jobTitleLink</th>
+      <th>companyLink</th>
       <th>Actions</th>
     </tr>
   `;
@@ -36,67 +60,123 @@ const populateTable = (users) => {
 
     if (user.level === 0) {
       tempTR.innerHTML = `
-        <td>${user.userName}</td>
+        <td>${getFirstName(user.userName)}</td>
+        <td>${getLastName(user.userName)}</td>
+        <td></td>
+        <td></td>
         <td></td>
         <td>${user.companyName || ""}</td>
+        <td></td>
         <td>${user.companyAddress || ""}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>${user.noEmployees || ""}</td>
+        <td></td>
         <td></td>
         <td>${user.companyProfile || ""}</td>
         <td>
           <a href="${user.userHref}" target="_blank">OPEN USER</a>
         </td>`;
-    } else if (user.level === 1 && !!user.profileUrl) {
+    }
+    // else if (user.level === 1 && !!user.profileUrl)
+    else if (user.level === 1) {
       tempTR.innerHTML = `
-        <td>${user.userName}</td>
+        <td>${getFirstName(user.userName)}</td>
+        <td>${getLastName(user.userName)}</td>
         <td>${user.currentPosition}</td>
+        <td></td>
+        <td></td>
         <td>${user.companyName || ""}</td>
+        <td></td>
         <td>${user.companyAddress || ""}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>${user.noEmployees || ""}</td>
-        <td>${user.profileUrl}</td>
+        <td></td>
+        <td></td>
         <td>${user.companyProfile || ""}</td>
         <td>
           <a href="https://www.linkedin.com/sales/company/${
             user.companyId
           }" target="_blank">OPEN COMPANY</a>
         </td>`;
-    } else if (user.level === 1) {
+    }
+    // else if (user.level === 1) {
+    //   tempTR.innerHTML = `
+    //     <td>${user.userName}</td>
+    //     <td>${user.currentPosition}</td>
+    //     <td>${user.companyName || ""}</td>
+    //     <td>${user.companyAddress || ""}</td>
+    //     <td>${user.noEmployees || ""}</td>
+    //     <td>
+    //       <input type="text" placeholder="profile url"/>
+    //       <button id="btnpro-${
+    //         user.userId
+    //       }" class="btn-add-profile">ADD</button>
+    //     </td>
+    //     <td>${user.companyProfile || ""}</td>
+    //     <td>
+    //       <a href="https://www.linkedin.com/sales/company/${
+    //         user.companyId
+    //       }" target="_blank">OPEN COMPANY</a>
+    //     </td>`;
+    // }
+    else if (user.level === 2 && !!user.companyProfile) {
       tempTR.innerHTML = `
-        <td>${user.userName}</td>
+        <td>${getFirstName(user.userName)}</td>
+        <td>${getLastName(user.userName)}</td>
         <td>${user.currentPosition}</td>
-        <td>${user.companyName || ""}</td>
-        <td>${user.companyAddress || ""}</td>
-        <td>${user.noEmployees || ""}</td>
-        <td>
-          <input type="text" placeholder="profile url"/>
-          <button id="btnpro-${
-            user.userId
-          }" class="btn-add-profile">ADD</button>
-        </td>
-        <td>${user.companyProfile || ""}</td>
-        <td>
-          <a href="https://www.linkedin.com/sales/company/${
-            user.companyId
-          }" target="_blank">OPEN COMPANY</a>
-        </td>`;
-    } else if (user.level === 2 && !!user.companyProfile) {
-      tempTR.innerHTML = `
-        <td>${user.userName}</td>
-        <td>${user.currentPosition}</td>
+        <td></td>
+        <td></td>
         <td>${user.companyName}</td>
+        <td></td>
         <td>${user.companyAddress}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>${user.noEmployees}</td>
-        <td>${user.profileUrl || ""}</td>
+        <td></td>
+        <td></td>
         <td>${user.companyProfile}</td>
         <td></td>`;
     } else if (user.level === 2) {
       tempTR.innerHTML = `
-        <td>${user.userName}</td>
+        <td>${getFirstName(user.userName)}</td>
+        <td>${getLastName(user.userName)}</td>
         <td>${user.currentPosition}</td>
+        <td></td>
+        <td></td>
         <td>${user.companyName}</td>
+        <td></td>
         <td>${user.companyAddress}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>${user.noEmployees}</td>
-        <td>${user.profileUrl || ""}</td>
+        <td></td>
+        <td></td>
         <td>
           <input type="text" placeholder="company url"/>
           <button id="btncompany-${

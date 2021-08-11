@@ -162,7 +162,7 @@ const populateTable = (users) => {
         <td></td>
         <td>${user.noEmployees}</td>
         <td></td>
-        <td></td>
+        <td>${user.profileUrl}</td>
         <td>${user.companyProfile}</td>
         <td></td>`;
     } else if (user.level === 2) {
@@ -185,7 +185,7 @@ const populateTable = (users) => {
         <td></td>
         <td>${user.noEmployees}</td>
         <td></td>
-        <td></td>
+        <td>${user.profileUrl}</td>
         <td>
           <input type="text" placeholder="company url"/>
           <button id="btncompany-${
